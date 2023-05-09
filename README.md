@@ -9,6 +9,8 @@ source ~/.bashrc
 nvm install 18
 ```
 
+Now run it
+
 ```bash
 git clone https://github.com/BernhardRode/dynamoose-tester.git
 npm i 
