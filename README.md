@@ -1,18 +1,17 @@
-# fuckit
+# DynamoDB Test
 
 
+To create the test pod
 
 ```bash
-apt update && apt install git curl bash unzip vim
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-source ~/.bashrc
-nvm install 18
+kubectl apply -f pod.yaml
+kubectl exec -it ubuntu -- /bin/bash
+/bin/entrypoint.sh
+source ~/.bashrc && cd /root/dynamoose-tester && npm start
 ```
 
-Now run it
+To delete the test pod
 
 ```bash
-git clone https://github.com/BernhardRode/dynamoose-tester.git
-npm i 
-node index.js
+kubectl delete -f pod.yaml
 ```
