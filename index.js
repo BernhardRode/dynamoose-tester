@@ -6,7 +6,7 @@ const ddb = new dynamoose.aws.ddb.DynamoDB();
 // Set DynamoDB instance to the Dynamoose DDB instance
 dynamoose.aws.ddb.set(ddb);
 
-const TABLE_NAME = "cubanops-dev-eks-cluster";
+const TABLE_NAME = "cubanops-devices-dev";
 
 const User = dynamoose.model("User", {
   onboardingId: { type: String, unique: true, required: true },
