@@ -25,7 +25,7 @@ metadata:
   labels:
     app: ubuntu
 spec:
-  serviceAccountName: ddb-serviceaccount
+  serviceAccountName: dynamodb-eks-access
   containers:
     - name: ubuntu
       image: ubuntu:latest
