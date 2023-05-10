@@ -1,27 +1,25 @@
-const dynamoose = require("dynamoose");
+import * as dynamoose from "dynamoose";
+import { randomUUID } from "crypto";
 
 // Create new DynamoDB instance
-const ddb = new dynamoose.aws.ddb.DynamoDB();
+const ddb = new dynamoose.aws.ddb.DynamoDB({ region: "eu-central-1" });
 
 // Set DynamoDB instance to the Dynamoose DDB instance
 dynamoose.aws.ddb.set(ddb);
 
-const TABLE_NAME = "cubanops-devices-dev";
-
-const User = dynamoose.model("User", {
-  onboardingId: { type: String, unique: true, required: true },
-  clientId: { type: String, unique: true, required: true },
+const options = { initialize: false };
+const User = dynamoose.model("cubanops-devices-dev", {
+  onboardingId: { type: String, required: true },
+  clientId: { type: String, required: true },
   calponiaProjectId: {
     type: String,
-    unique: false,
     required: true,
-    sparse: true,
   },
   onboardRequestedOn: { type: Date, default: Date.now },
   onboardedOn: { type: Date },
   timeout: { type: Number, required: true },
-  refreshToken: { type: String, unique: true, required: false, sparse: true },
-  accessToken: { type: String, unique: true, required: false, sparse: true },
+  refreshToken: { type: String, required: false },
+  accessToken: { type: String, required: false },
   type: { type: String, required: true },
   ipAddress: { type: String, required: false },
   lastOnlineOn: { type: Date, required: false },
@@ -29,12 +27,10 @@ const User = dynamoose.model("User", {
   sshTunnelPortNo: { type: String, required: false },
 });
 
-const options = { create: false };
-const DynamoTable = new dynamoose.Table(TABLE_NAME, [User], options);
-
+const uuid = randomUUID();
 const myUser = new User({
-  onboardingId: "onboarded",
-  clientId: "tim-the-client",
+  onboardingId: `onboarded-${uuid}`,
+  clientId: `tim-the-client-${uuid}`,
   calponiaProjectId: "my-calponia-project",
   timeout: 1000,
   refreshToken: "refreshToken",
@@ -42,7 +38,11 @@ const myUser = new User({
   type: "demo",
 });
 
-console.log(myUser.id); // 1
+console.log(myUser.onboardingId); // 1
 // now save
 
-myUser.save();
+myUser
+  .save()
+  .then(() => console.log("Saved"))
+  .catch((err: Error) => console.error(err.message))
+  .finally(() => console.log("finally"));
