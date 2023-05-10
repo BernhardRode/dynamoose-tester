@@ -29,7 +29,7 @@ const User = dynamoose.model("User", {
   sshTunnelPortNo: { type: String, required: false },
 });
 
-const options = { create: false ̉};
+const options = { create: false };
 const DynamoTable = new dynamoose.Table(TABLE_NAME, [User], options);
 
 const myUser = new User({
