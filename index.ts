@@ -18,6 +18,7 @@ const run = async () => {
     initialize: CPS_DYNAMODB_INITIALIZE === "true",
     create: CPS_DYNAMODB_CREATE === "true",
     update: CPS_DYNAMODB_UPDATE === "true",
+    throughput: "ON_DEMAND",
   };
   console.log("Options", options);
 
