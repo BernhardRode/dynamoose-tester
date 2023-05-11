@@ -43,13 +43,7 @@ const run = async () => {
     sshTunnelPortNo: { type: String, required: false },
   });
 
-  const table = new dynamoose.Table(TABLE_NAME, [Device], options);
-  // try {
-  //   const i = await table.initialize();
-  //   console.log("TABLE INITIALIZED", i);
-  // } catch (e) {
-  //   console.error((e as Error).message);
-  // }
+  new dynamoose.Table(TABLE_NAME, [Device], options);
 
   const uuid = randomUUID();
   const myDevice = new Device({
