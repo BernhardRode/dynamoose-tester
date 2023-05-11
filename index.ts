@@ -6,9 +6,9 @@ import { TableOptions } from "dynamoose/dist/Table";
 const run = async () => {
   // Create new DynamoDB instance
   const {
-    CPS_DYNAMODB_INITIALIZE = "false",
+    CPS_DYNAMODB_INITIALIZE = "true",
     CPS_DYNAMODB_CREATE = "false",
-    CPS_DYNAMODB_UPDATE = "false",
+    CPS_DYNAMODB_UPDATE = "true",
     CPS_SHOULD_SAVE = "false",
   } = process.env;
   const TABLE_NAME = "cubanops-devices-dev";
