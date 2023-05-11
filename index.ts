@@ -1,5 +1,7 @@
 import * as dynamoose from "dynamoose";
 import { randomUUID } from "crypto";
+import { DeepPartial } from "dynamoose/dist/General";
+import { TableOptions } from "dynamoose/dist/Table";
 
 const run = async () => {
   // Create new DynamoDB instance
@@ -14,7 +16,7 @@ const run = async () => {
 
   const ddb = new dynamoose.aws.ddb.DynamoDB({ region: AWS_REGION });
 
-  const options = {
+  const options: DeepPartial<TableOptions> = {
     initialize: CPS_DYNAMODB_INITIALIZE === "true",
     create: CPS_DYNAMODB_CREATE === "true",
     update: CPS_DYNAMODB_UPDATE === "true",
