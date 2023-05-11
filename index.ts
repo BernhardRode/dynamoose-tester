@@ -41,12 +41,12 @@ const run = async () => {
   });
 
   const table = new dynamoose.Table(TABLE_NAME, [Device], options);
-  try {
-    const i = await table.initialize();
-    console.log("TABLE INITIALIZED", i);
-  } catch (e) {
-    console.error((e as Error).message);
-  }
+  // try {
+  //   const i = await table.initialize();
+  //   console.log("TABLE INITIALIZED", i);
+  // } catch (e) {
+  //   console.error((e as Error).message);
+  // }
 
   const uuid = randomUUID();
   const myDevice = new Device({
