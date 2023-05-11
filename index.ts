@@ -2,14 +2,17 @@ import * as dynamoose from "dynamoose";
 import { randomUUID } from "crypto";
 
 // Create new DynamoDB instance
-const ddb = new dynamoose.aws.ddb.DynamoDB({ region: "eu-central-1" });
+const TABLE_NAME = "cubanops-devices-dev";
+const AWS_REGION = "eu-central-1";
+
+const ddb = new dynamoose.aws.ddb.DynamoDB({ region: AWS_REGION });
 
 // Set DynamoDB instance to the Dynamoose DDB instance
 dynamoose.aws.ddb.set(ddb);
 
 const options = { initialize: false, create: false };
-const User = dynamoose.model(
-  "cubanops-devices-dev",
+const Device = dynamoose.model(
+  TABLE_NAME,
   {
     onboardingId: { type: String, required: true },
     clientId: { type: String, required: true },
@@ -32,7 +35,7 @@ const User = dynamoose.model(
 );
 
 const uuid = randomUUID();
-const myUser = new User({
+const myDevice = new Device({
   onboardingId: `onboarded-${uuid}`,
   clientId: `tim-the-client-${uuid}`,
   calponiaProjectId: "my-calponia-project",
@@ -42,11 +45,11 @@ const myUser = new User({
   type: "demo",
 });
 
-console.log(myUser.onboardingId); // 1
+console.log(myDevice.onboardingId); // 1
 // now save
 
-myUser
+myDevice
   .save()
   .then(() => console.log("Saved"))
   .catch((err: Error) => console.error(err.message))
-  .finally(() => console.log("finally"));
+  .finally(() => console.log("Finally"));
