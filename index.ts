@@ -1,19 +1,27 @@
 import * as dynamoose from "dynamoose";
 import { randomUUID } from "crypto";
 
-// Create new DynamoDB instance
-const TABLE_NAME = "cubanops-devices-dev";
-const AWS_REGION = "eu-central-1";
+const run = async () => {
+  // Create new DynamoDB instance
+  const {
+    CPS_DYNAMODB_INITIALIZE = "false",
+    CPS_DYNAMODB_CREATE = "false",
+    CPS_DYNAMODB_UPDATE = "false",
+    CPS_SHOULD_SAVE = "false",
+  } = process.env;
+  const TABLE_NAME = "cubanops-devices-dev";
+  const AWS_REGION = "eu-central-1";
 
-const ddb = new dynamoose.aws.ddb.DynamoDB({ region: AWS_REGION });
+  const ddb = new dynamoose.aws.ddb.DynamoDB({ region: AWS_REGION });
 
-// Set DynamoDB instance to the Dynamoose DDB instance
-dynamoose.aws.ddb.set(ddb);
+  const options = {
+    initialize: CPS_DYNAMODB_INITIALIZE === "true",
+    create: CPS_DYNAMODB_CREATE === "true",
+    update: CPS_DYNAMODB_UPDATE === "true",
+  };
+  console.log("Options", options);
 
-const options = { initialize: false, create: false };
-const Device = dynamoose.model(
-  TABLE_NAME,
-  {
+  const Device = dynamoose.model("Device", {
     onboardingId: { type: String, required: true },
     clientId: { type: String, required: true },
     calponiaProjectId: {
@@ -30,26 +38,37 @@ const Device = dynamoose.model(
     lastOnlineOn: { type: Date, required: false },
     supportAccessTimeStamp: { type: Number, required: false },
     sshTunnelPortNo: { type: String, required: false },
-  },
-  options
-);
+  });
 
-const uuid = randomUUID();
-const myDevice = new Device({
-  onboardingId: `onboarded-${uuid}`,
-  clientId: `tim-the-client-${uuid}`,
-  calponiaProjectId: "my-calponia-project",
-  timeout: 1000,
-  refreshToken: "refreshToken",
-  accessToken: "accessToken",
-  type: "demo",
-});
+  const table = new dynamoose.Table(TABLE_NAME, [Device], options);
+  try {
+    const i = await table.initialize();
+    console.log("TABLE INITIALIZED", i);
+  } catch (e) {
+    console.error((e as Error).message);
+  }
 
-console.log(myDevice.onboardingId); // 1
-// now save
+  const uuid = randomUUID();
+  const myDevice = new Device({
+    onboardingId: `onboarded-${uuid}`,
+    clientId: `tim-the-client-${uuid}`,
+    calponiaProjectId: "my-calponia-project",
+    timeout: 1000,
+    refreshToken: "refreshToken",
+    accessToken: "accessToken",
+    type: "demo",
+  });
 
-myDevice
-  .save()
-  .then(() => console.log("Saved"))
-  .catch((err: Error) => console.error(err.message))
-  .finally(() => console.log("Finally"));
+  // now save
+  if (CPS_SHOULD_SAVE === "true") {
+    try {
+      const result = await myDevice.save();
+      console.log("SAVED", myDevice.onboardingId, result);
+    } catch (e) {
+      console.error((e as Error).message);
+    }
+    console.log("FINALLY");
+  }
+};
+
+run();
